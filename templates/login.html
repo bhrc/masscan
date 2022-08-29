@@ -1,0 +1,32 @@
+{% extends 'page.html' %}
+{% block pagetitle %}ورود به محیط کاربری{% endblock %}
+{% block pagecontent %}
+<section>
+  <form method="post" id="singninFrom">
+    {% csrf_token %}
+    <div class="container-sm mt-5">
+        <div class="row justify-content-md-center m-2">
+            <div class="col-sm-6">
+                <h2>ورود به محیط کاربری</h2>
+                <div class="form-floating mb-3">
+                  <input type="text" name="username" dir="ltr" class="form-control" placeholder="نام کاربری خود را وارد کنید (ایمیل)" required>
+                  <label for="username">ایمیل <span class="text-danger">*</span></label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" name="password" dir="ltr" class="form-control" placeholder="***********" required>
+                  <label for="password">پسورد <span class="text-danger">*</span></label>
+                </div>
+                <label><input type="checkbox" name="condition" id="condition"> من را به خاطر بسپار.</label>
+                <div class="float-end"> <a href="javascript:;" data-toggle="modal" data-target="#forgotPass">پسورد خود را فراموش کردید؟</a> </div>
+                <div class="d-grid mt-1">
+                  <button class="btn btn-primary" type="submit">ورود</button>
+                </div>
+                <p>اگر عضو نیستید
+                    <a href="/account/register">ثبت‌نام کنید</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+  </form>
+</section>
+{% endblock %}

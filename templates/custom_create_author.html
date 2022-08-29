@@ -1,0 +1,40 @@
+$("#author-form").submit(function (e) {
+        // preventing from page reload and default actions
+        e.preventDefault();
+        // serialize the data for sending the form data.
+        var serializedData = $(this).serialize();
+        // make POST ajax call
+        $.ajax({
+            type: 'POST',
+            url: "{% url '.' %}", //serializer_ajax_mehit_from_vies
+            data: serializedData,
+            success: function (response) {
+                // on successfull creating object
+                // 1. clear the form.
+                $("#author-form").trigger('reset');
+                // 2. focus to nickname input
+                $("#id_author_name").focus();
+            },
+            error: function (response) {
+                // alert the error if any error occured
+                alert(response["responseJSON"]["error"]);
+            }
+
+        })
+
+    })
+    {% load static %}
+    {% load widget_tweaks %}
+
+    {% block content %}
+        <h4>
+            My author
+        </h4>
+        <form id="author-form">
+            {% csrf_token %}
+            <p>{{ form.as_p }}</p>
+            <button class="btn btn-outline-success" type="submit">save</button>
+        </form>
+        <br>
+
+    {% endblock %}

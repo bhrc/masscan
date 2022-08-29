@@ -1,0 +1,56 @@
+ <script type="text/javascript">
+      $(function () {
+          $("#create-author").modalForm({
+            formURL: "{%  url 'author_add' %}"
+          });
+      })
+    </script>
+<button id="create-author" class="btn btn-primary" type="button" name="button">
+    <span class="fa fa-plus"/>
+</button>
+
+ <script type="text/javascript">
+         // assume the add author button has an id of add_author_button
+        $('#create-author').click(function(event){
+            event.preventDefault();
+            // assume the text field has an id of author_name
+            author_name= $('#author_name').val();
+            create_post(event, author_name);
+        }
+        ) //<-------- this closing bracket was missing?
+
+         function create_post(event, author_name) {
+            $.ajax({
+                url: "{%  url '.' %}", // the endpoint I'll precise that in comment
+                type: "POST", // http method
+                data: {
+                    author_name: author_name,
+                    csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
+                },
+
+                // handle a successful response - data will be a json object returned from your view method
+                success: function (data) {
+                    if (data.error === null) {
+                        // assume your author multiple choice select has an id of author_sel
+                        // this will append the new author name to the list and will also
+                        // set the value for this author to be the newly created id so you can
+                        // perform other functions on the author like update and/or delete
+                        $('#author_id').append($('<option/>', {
+                            value: data.author_id,
+                            text: data.author_name,
+                        }));
+                    } else {
+                        // display the error on the page
+                        // and/or write it to the console log
+                        console.log(data.error);
+                    }
+                },
+                // handle a non-successful http response
+                error: function (xhr, errmsg, err) {
+                    // display the error on the page
+                    // and/or write it to the console log
+                    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+                }
+            });
+        }
+    </script>

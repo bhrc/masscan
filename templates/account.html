@@ -1,0 +1,118 @@
+{% extends 'page.html' %}
+{% block pagetitle %}محیط کاربری{% endblock %}
+{% block pagecontent %}
+<section class="user pt-1">
+  <div class="container">
+    <div class="row mb-2">
+        <div class="col">
+            <h2> محیط کاربری {{ user.first_name }} {{ user.last_name }}</h2>
+            <div class="btn-group">
+                <a href="/account/update" class="btn btn-primary btn-sm">ویرایش</a>
+                <a href="/account/password-change" class="btn btn-primary btn-sm">تغییر پسورد</a>
+                <a href="/account/logout" class="btn btn-danger btn-sm">خروج</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col">
+            <h6>آخرین محتوای ارسالی<a href="{% url 'add_content' %}" class="btn btn-primary btn-sm py-0 mr-2 float-end">محتوا جدید</a></h6>
+            {% if cases|length > 0 %}
+            <table class="table table-sm">
+                <thead class="table-primary table-striped">
+                    <tr>
+                        <th class="small" scope="col">روایت</th>
+                        <th class="small" scope="col">وضعیت</th>
+                        <th class="small" scope="col">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="myRecentCases">
+                {% for case in cases %}
+                    <tr>
+                        <td class="small">{{ case.title  | truncatewords:8 }}</td>
+                        <td class="small">{% if case.published %}منتشر شده{% else %}پیش‌نویس{% endif %}</td>
+                        <td class="small">
+                            {% if case.published %}<a href="/contents/{{ case.id }}" class="btn btn-sm btn-primary py-0 rounded-0">نمایش</a>{% endif %}
+                            {% if user.is_staff %}
+                            <a href="/contents/{{ case.id }}/edit" class="btn btn-sm btn-success py-0 rounded-0">ویرایش</a>
+                            <a onclick="return confirm('مطمئنید می‌خواهید «{{ case.title }}» را پاک کنید؟');" href="/contents/{{ case.id }}/delete" class="btn btn-sm btn-danger py-0 rounded-0">حذف</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-success text-center small w-100">روایتی ارسال نکرده‌اید.</div>
+            {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% if user.is_staff %}
+<section class="editor">
+  <div class="container">
+    <div class="row">
+      <h5>محیط ویراستاری</h5>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+            <h6>پست‌‌های در انتظار تایید</h6>
+            {% if page_drafts|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead class="table-warning table-striped">
+                        <tr>
+                            <th class="small" scope="col">صفحه</th>
+                            <th class="small" scope="col">روایت</th>
+                            <th class="small" scope="col">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="edPostDrafts">
+                    {% for post_draft in page_drafts %}
+                        <tr>
+                            <td class="small">{{ post_draft.title | truncatewords:8 }}</td>
+                            <td class="small">{{ post_draft.case }}</td>
+                            <td class="small">
+                                <a href="/cases/{{ post_draft.case }}/{{ post_draft.id }}/update" class="btn btn-sm btn-success py-0 rounded-0">ویرایش</a>
+                                <a href="/cases/{{ post_draft.case }}/{{ post_draft.id }}/delete"  onclick="return confirm('مطمئنید می‌خواهید «{{ post_draft.title }}» را پاک کنید؟');" class="btn btn-sm btn-danger py-0 rounded-0">حذف</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-primary small text-center w-100">صفحه‌ای برای تأیید وجود ندارد.</div>
+            {% endif %}
+      </div>
+      <div class="col-sm-6">
+            <h6>روایت‌‌های در انتظار تایید</h6>
+            {% if case_drafts|length > 0 %}
+            <table class="table table-sm">
+                <thead class="table-primary table-striped">
+                    <tr>
+                        <th class="small" scope="col">صفحه</th>
+                        <th class="small" scope="col">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="edCaseDrafts">
+                {% for case_draft in case_drafts %}
+                    <tr>
+                        <td>{{ case_draft.name  | truncatewords:8 }}</td>
+                        <td>
+                            <a href="/cases/{{ case_draft.slug }}/update" class="btn btn-sm btn-success py-0 rounded-0">ویرایش</a>
+                            <a href="/cases/{{ case_draft.slug }}/delete" onclick="return confirm('مطمئنید می‌خواهید «{{ case_draft.name }}» را پاک کنید؟');" class="btn btn-sm btn-danger py-0 rounded-0">حذف</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="alert alert-success small text-center w-100">روایتی برای تأیید وجود ندارد.</div>
+            {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <title>مسکن</title>
+    <style>
+        html, body {
+            font-family: Vazirmatn, sans-serif;
+            font-weight: 300;
+        }
+        .bd-blue-800 {
+            color: #fff;
+            background-color: #052c65;
+        }
+        .rounded-10 {
+            border-radius: 1rem!important;
+        }
+        a:link {text-decoration:none}
+        a:visited {text-decoration:none}
+        a:hover {text-decoration:underline}
+        a:active {text-decoration:none}
+
+a {
+  font-weight: 500;
+  text-decoration: none !important;
+  line-height: 1.6;
+}
+blockquote {
+  background: #f9f9f9;
+  border-right: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  text-align: justify;
+  quotes: "\201C""\201D""\2018""\2019";
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  line-height: 0.1em;
+  margin-left: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  display: inline;
+}
+.card-image-hr {
+    margin-left: -50px;
+}
+.square {
+  width: 100%;
+  height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/js/standalone/selectize.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/css/selectize.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+  </head>
+  <body class="text-dark bg-white">
+  <header>
+      <section class="bg-dark text-light">
+          <div class="container">
+              <div class=" small d-flex">
+                  <a class="text-reset my-auto" href="https://bhrc.ac.ir"><span>مرکز تحقیقات راه، مسکن و شهرسازی</span></a>
+                  {% if user.is_authenticated %}
+                  <a href="/account/" class="btn btn-sm ms-auto text-light rounded-pill">{{ user.first_name }} {{ user.last_name }}</a>
+                  {% else %}
+                  <a href="/account/login" class="btn btn-sm ms-auto text-light rounded-pill">ورود</a>
+                  {% endif %}
+              </div>
+          </div>
+      </section>
+  </header>
+  <main>
+    {% block content %}
+    {% endblock %}
+</main>
+<div class="pt-5 pb-1 footer text-white bg-dark">
+<div class="container">
+  <div class="row">
+    <div class="col-lg-5 col-xs-12 about-company">
+      <a href="/" class="text-reset h1">دیده‌بان مسکن</a>
+      <p class="pr-5 lead text-white-50">
+                    مرجع تحقیق، سیاست‌گذاری، و کنشگری در حوزه مسکن
+      </p>
+    </div>
+    <div class="col-lg-3 col-xs-12 links">
+      <h4 class="mt-lg-0 mt-sm-3">پیوندها</h4>
+    </div>
+    <div class="col-lg-4 col-xs-12 location">
+      <h4 class="mt-lg-0 mt-sm-4">تماس</h4>
+      <p><i class="bi bi-geo-alt-fill"></i> </p>
+      <p class="mb-0" dir="ltr"><i class="bi bi-telephone-fill"></i> </p>
+      <p dir="ltr"><i class="bi bi-envelope-fill"></i> info@maskan.org</p>
+    </div>
+  </div>
+  <div class="row mt-5 text-center" dir="ltr">
+    <div class="col copyright">
+      <p class=""><small class="text-white-50">© 2022 maskan.org | All Rights Reserved.</small></p>
+    </div>
+  </div>
+</div>
+</div>
+
+  </body>
+  <style>
+
+.tab-nav-wrapper {
+  max-width: 100%;
+  margin: 0 auto;
+  overflow: auto; /* add */
+}
+.tab-nav-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+
+
+.tab-nav-wrapper > ul {
+  padding: 0 !important;
+  margin: 0 !important;
+  /* width: 100%; */ /* remove */
+  white-space: nowrap; /* add */
+  z-index: 100;
+  /* background-color: #ccc; */ /* move */
+}
+
+.tab-nav-wrapper > ul li {
+  display: inline;
+  text-align: center;
+  margin-left: -5px !important;
+}
+
+.tab-nav-wrapper > ul li a {
+  display: inline-block;
+  width: 20%;
+  font-size: 12px;
+  padding: 15px 0 8px 0;
+  margin: 0;
+  text-decoration: none;
+}
+
+.mobile-footer {
+    position: fixed;
+    height: 75px;
+    bottom: 0;
+    width: 100%;
+    -webkit-box-shadow: 0px -8px 3px rgba(0, 0, 0, 0.175);
+    -moz-box-shadow: 0px -8px 3px rgba(0, 0, 0, 0.175);
+    box-shadow: 0px -8px 3px rgba(0, 0, 0, 0.175);
+}
+
+  </style>
+<footer class="bg-body mobile-footer bg-body rounded d-block d-sm-none">
+    <div class="tab-nav-wrapper">
+            <ul class="">
+              <li class="">
+                <a class=" active link-dark" aria-current="page" href="/"><i class="bi h1 bi-house-fill"></i><br>خانه</a>
+              </li>
+              <li class="">
+                <a class="link-dark" href="/contents/piece"><i class="bi h1 bi-file-earmark-text-fill"></i><br> یادداشت‌ها</a>
+              </li>
+              <li class="">
+                <a class="link-dark" href="/contents/article"><i class="bi h1 bi-file-ruled-fill"></i><br> مقالات علمی</a>
+              </li>
+              <li class="">
+                <a class="link-dark" href="/contents/book"><i class="bi h1 bi-book"></i><br> کتاب‌ها</a>
+              </li>
+              <li class="">
+                <a class="link-dark" href="/contents/thesis"><i class="bi h1 bi-journal"></i><br> پایان‌نامه‌ها</a>
+              </li>
+              <li class="">
+                <a class="link-dark disabled" href="#"><i class="bi h1 bi-graph-up"></i><br> آمار</a>
+              </li>
+              <li class="">
+                <a class="link-dark disabled" href="#"><i class="bi h1 bi-map"></i><br> نقشه‌ها</a>
+              </li>
+              <li class="">
+                <a class="link-dark disabled" href="#"><i class="bi h1 bi-inboxes-fill"></i><br> داده‌ها</a>
+              </li>
+            </ul>
+    </div>
+</footer>
+
+</html>

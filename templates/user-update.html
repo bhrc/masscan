@@ -1,0 +1,73 @@
+{% extends 'page.html' %}
+{% block pagetitle %}ویرایش پروفایل{% endblock %}
+{% block pagecontent %}
+    <div class="form-content my-3 p-3">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5">
+                        <div class="card shadow-lg border-0 rounded-lg mt-0 mb-3">
+                            <div class="card-header justify-content-center">
+                              <h3 class="font-weight-light my-4 text-center">ویرایش پروفایل</h3>
+                            </div>
+                            {% if user_form.errors %}
+                                <div class="alert alert-danger alert-dismissible" role="alert">
+                                    <div id="form_errors">
+                                        {% for key, value in user_form.errors.items %}
+                                            <strong>{{ value }}</strong>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="form-floating mb-3">
+                                                {{ user_form.first_name }}
+                                                <label>نام</label>
+                                                <span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="form-floating mb-3">
+                                                {{ user_form.last_name }}
+                                                <label>نام خانوادگی</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="form-floating mb-3">
+                                                {{ user_form.username }}
+                                                <label>نام کاربری</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="form-floating mb-3">
+                                                {{ user_form.email }}
+                                                <label>ایمیل</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-10 offset-md-1">
+                                            <div class="form-group mt-0 mb-1">
+                                                <button type="submit" class="col-md-12 btn btn-dark" id="reset">به‌روزرسانی</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

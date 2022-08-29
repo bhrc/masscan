@@ -1,0 +1,37 @@
+{% extends 'default.html' %}
+{% block content %}
+  <script type="module">
+    import Tags from "https://cdn.jsdelivr.net/gh/lekoala/bootstrap5-tags@master/tags.js";
+    Tags.init("select");
+  </script>
+
+<section>
+<div class="container bg-light">
+    <div class="row">
+        <div class="col-12">
+            <form action="" method="post">
+            {% csrf_token %}
+            <table>
+            {{ form.as_table }}
+            </table>
+            <input type="submit" value="Submit">
+                <input type="text" id="input-tags">
+            </form>
+        </div>
+    </div>
+      <div class="row mb-3 g-3">
+        <div class="col-md-4">
+          <label for="validationTagsNew" class="form-label">Tags (allow new)</label>
+          <select class="form-select" id="validationTagsNew" name="tags_new[]" multiple data-allow-new="true">
+            <option selected disabled hidden value="">Choose a tag...</option>
+            <option value="1" selected="selected">Apple</option>
+            <option value="2">Banana</option>
+            <option value="3">Orange</option>
+          </select>
+          <div class="invalid-feedback">Please select a valid tag.</div>
+        </div>
+      </div>
+
+</div>
+</section>
+{% endblock %}

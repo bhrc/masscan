@@ -1,0 +1,435 @@
+{% extends 'page.html' %}
+
+{% block pagecontent %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/css/selectize.bootstrap5.css" integrity="sha512-wD3+yEMEGhx4+wKKWd0bNGCI+fxhDsK7znFYPvf2wOVxpr7gWnf4+BKphWnUCzf49AUAF6GYbaCBws1e5XHSsg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.13.6/js/selectize.min.js" integrity="sha512-DBOconMAY06o4R79zeXKKM3h/g5pca647Eabb+6viK4dRpiMOlZFS4gsbukTbHo+ppdKx4yr+/0m2JnpeAIrSw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<div class="container p-4 rounded-10 shadow bg-light">
+    {% if content %}
+    <h2>ویرایش محتوا با عنوان «{{ content.title|truncatewords:8 }}»</h2>
+    {% else %}
+    <h2>افزودن محتوای جدید</h2>
+    {% endif %}<br>
+    <form method="post" action="{% url 'add_content'  %}"  enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <div class="form-floating">
+                    <select id="type" name="type" class="form-select">
+                        {% for type in types %}
+                            <option value="{{ type.id }}" {% if content.type.id == type.id %}selected{% endif %}>{{ type.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="type">نوع محتوا</label>
+                </div>
+            </div>
+              <div class="col-sm-6">
+                  <div class="form-floating" aria-label="نوع صفحه">
+                      <select class="form-select" id="featured" name="featured">
+                        <option value="False">عادی</option>
+                        <option value="True" {% if content.featured %}selected{% endif %}>شاخص</option>
+                      </select>
+                      <label for="featured">اهمیت</label>
+                  </div>
+              </div>
+
+        </div>
+        <div class="form-floating mb-2">
+            <input id="title" class="form-control" type="text" name="title" placeholder="عنوان مطلب" value="{{ content.title }}" required>
+            <label for="title">عنوان</label>
+        </div>
+        <label for="authors">نویسنده(ها)</label>
+        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#addAuthorModal">
+          نویسنده جدید
+        </button>
+        <select id="authors" name="authors" multiple class="form-select selectize mb-2" multiple aria-label="multiple select example">
+             {% include "ajaxAuthors.html" %}
+        </select>
+        <label for="authors">مترجم(ها)</label>
+        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#addTranslatorModal">
+          نویسنده جدید
+        </button>
+        <select id="translators" name="translators" multiple class="form-select selectize mb-2" multiple aria-label="multiple select example">
+             {% include "ajaxAuthors.html" %}
+        </select>
+        <label for="categories">موضوع(ها)</label>
+        <select id="categories" name="categories" multiple class="form-select selectize mb-2 direct-add" data-url="{% url 'add-cat' %}" aria-label="multiple select example">
+             {% include "ajaxCategories.html" %}
+        </select>
+        <label for="tags">برچسب(ها)</label>
+        <select id="tags" name="tags" multiple class="form-select selectize mb-2 direct-add" data-url="{% url 'add-tag' %}" aria-label="multiple select example">
+             {% include "ajaxTags.html" %}
+        </select>
+        <label for="tags">موقعیت جغرافیایی</label>
+        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#addGeoTagModal">
+          موقعیت جدید
+        </button>
+        <select id="geotags" name="geotags" multiple class="form-select selectize mb-2" multiple aria-label="multiple select example">
+             {% include "ajaxGeoTags.html" %}
+        </select>
+        <div class="row">
+            <div class="col">
+                <label for="tags">منبع</label>
+                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#addPubModal">
+                  منبع جدید
+                </button>
+                <select id="publication" name="publication" class="form-select selectize direct-add mb-2" data-url="{% url 'add-publication' %}">
+                    <option></option>
+                    {% for publication in publications %}
+                    <option value="{{publication.id}}"  {% if content.publication.id == publication.id %}selected{% endif %}>{{publication.title}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col mt-3">
+                <label>تاریخ انتشار</label>
+                <div class="input-group">
+                  <input type="number" class="form-control" name="pub_date_d" placeholder="روز" aria-label="روز" value="{{ content.pub_date_d }}">
+                  <input type="number" class="form-control" name="pub_date_m" placeholder="ماه(عدد)" aria-label="ماه" value="{{ content.pub_date_m }}">
+                  <input type="number" class="form-control" name="pub_date_y" placeholder="سال(کامل)" aria-label="سال" value="{{ content.pub_date_y }}">
+                </div>
+            </div>
+        </div>
+        <div class="form-floating mb-3">
+          <textarea class="form-control" placeholder="خلاصه‌ مطلب" id="excerpt" name="excerpt" rows="3">{{ content.excerpt }}</textarea>
+          <label for="floatingTextarea">خلاصه</label>
+        </div>
+        <textarea class="form-control" placeholder="محتوا" id="content" name="content" rows="10">{{ content.content }}</textarea>
+        <div class="form-floating mb-3">
+          <input type="url" class="form-control mt-2" id="url" name="url" placeholder="آدرس اینترنتی" dir="ltr" value="{{ content.url }}">
+          <label for="url">آدرس اینترنتی</label>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="img">عکس شاخص</label>
+                  {% if content.img.url %}
+                  <a class="btn btn-primary eximg" href="{{ content.img.url }}" target="_blank">نمایش</a>
+                  <a id="remove-img" href="javascript:void(0)" class="btn btn-danger eximg">حذف</a>
+                  {% else %}
+                  <input type="file" class="form-control" id="img" name="img" dir="ltr">
+                  {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="pdf">فایل پی‌دی‌اف پیوست</label>
+                  {% if content.pdf_file.url %}
+                  <a class="btn btn-primary expdf" href="{{ content.pdf_file.url }}" target="_blank">نمایش</a>
+                  <a id="remove-pdf" class="btn btn-danger expdf">جایگزینی</a>
+                  {% else %}
+                  <input type="file" class="form-control" id="pdf" name="pdf" dir="ltr">
+                  {% endif %}
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                  <label class="input-group-text" for="action">اقدام</label>
+                  <select class="form-control" name="action" aria-label="اقدام">
+                    <option value="False">پیش‌نویس</option>
+                    <option value="True" selected>انتشار</option>
+                  </select>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="created_by" {% if content %}value="{{ content.created_by }}"{% else %}value="{{ user.username }}"{% endif %}>
+        <input type="hidden" name="modified_by" {% if content %}value="{{ user.username }}"{% else %}value=""{% endif %}>
+        <div class="d-grid gap-2">
+            <input class="btn btn-success" type="submit" value="ثبت">
+        </div>
+    </form>
+</div>
+<div class="modal fade" id="addAuthorModal" tabindex="-1" aria-labelledby="addAuthorModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">افزودن نویسنده</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" class="ajax-form" data-target="authors"  data-url="{% url 'add-author' %}" id="author-ajax-form">
+      <div class="modal-body">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="نام">
+              <label for="first_name">نام</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="نام خانوادگی">
+              <label for="last_name">نام خانوادگی</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="autSlug" name="slug" placeholder="نامک" dir="ltr">
+              <label for="autSlug">نامک</label>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+        <button type="submit" class="btn btn-success">ثبت</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addTranslatorModal" tabindex="-1" aria-labelledby="addTranslatorModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTranslatorModal">افزودن مترجم</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" class="ajax-form" data-target="translators"  data-url="{% url 'add-author' %}" id="translator-ajax-form">
+      <div class="modal-body">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="نام">
+              <label for="first_name">نام</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="نام خانوادگی">
+              <label for="last_name">نام خانوادگی</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="trSlug" name="slug" placeholder="نامک" dir="ltr">
+              <label for="trSlug">نامک</label>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+        <button type="submit" class="btn btn-success">ثبت</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addPubModal" tabindex="-1" aria-labelledby="addPubModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPubModal">افزودن مرجع جدید</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" class="ajax-form" data-target="publication"  data-url="{% url 'add-publication' %}" id="pub-ajax-form">
+      <div class="modal-body">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="pubTitle" name="title" placeholder="نام">
+              <label for="title">عنوان</label>
+            </div>
+            <div class="form-floating">
+              <input type="text" class="form-control" id="pubSlug" name="slug" placeholder="نامک">
+              <label for="last_name">نامک</label>
+            </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+        <button type="submit" class="btn btn-success">ثبت</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<style>
+#formMap {
+    width: 100%;
+    height: 400px;
+}
+</style>
+<div class="modal fade" id="addGeoTagModal" tabindex="-1" aria-labelledby="addGeoTagModal" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">افزودن موقعیت جغرافیایی جدید</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" class="ajax-form" data-target="geotags"  data-url="{% url 'add-geotag' %}" id="geotag-ajax-form">
+      <div class="modal-body">
+            {% csrf_token %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" id="geotagTitle" name="title" placeholder="نام">
+                          <label for="title">عنوان</label>
+                        </div>
+                        <div class="form-floating">
+                          <input type="text" class="form-control" id="geotagSlug" name="slug" placeholder="نامک">
+                          <label for="last_name">نامک</label>
+                        </div>
+                        <label>محدوده</label><br>
+                        <small>موقعیت جغرافیایی را در نقشه زیر مشخص کنید. برای این کار از طریق ابزارهای سمت راست محدوده دقیق روایت را با نقطه، خط، یا چندضلعی ترسیم کنید. </small>
+
+                    </div>
+                    <div class="col">
+                        <input type="hidden" name="json" id="json">
+                        <div id="formMap" class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom"></div>
+                    </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+        <button type="submit" class="btn btn-success">افزودن</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.tiny.cloud/1/juqf3cm2jqadgpdbcnx3yzwc08nkuqwgqlblnz5y3glurf1z/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+<script type='text/javascript'>
+    tinymce.init({
+      selector: 'textarea#content',
+      plugins: 'quickbars link paste',
+      quickbars_insert_toolbar: 'quicktable | hr ',
+      toolbar: false,
+      menubar: false,
+      paste_as_text: true,
+      paste_block_drop: false,
+      language: 'fa'
+    });
+    $(function () {
+      $("select.selectize").selectize();
+
+    });
+
+  $('.direct-add').selectize({
+    sortField: 'text',
+    create: function(input) {
+            var $formData = {'input': input}
+            var id = $(this)[0].$input["0"].id;
+            var $thisURL = $("#"+id).attr('data-url');
+              console.log($thisURL)
+            var jqxhr = $.ajax({
+                method: "POST",
+                url: $thisURL,
+                data: $formData,
+                global: false,
+                async:false,
+                success: function (data){
+                      return data
+                }
+            }).responseText;
+            return {
+            value: jqxhr,
+            text: input
+            }
+    }
+  });
+  $('#remove-img').on('click', function () {
+      $(this).parent().append('<input type="file" class="form-control" id="img" name="img" dir="ltr">')
+      $('.eximg').remove();
+  })
+  $('#remove-pdf').on('click', function () {
+      $(this).parent().append('<input type="file" class="form-control" id="pdf" name="pdf" dir="ltr">')
+      $('.expdf').remove();
+  })
+    $(document).ready(function() {
+        {% if content.authors.all %}
+            var $select = $('#authors');
+            var selectize = $select[0].selectize;
+        {% for item in content.authors.all %}selectize.addItem({{item.id}});{% endfor %}
+        {% endif %}
+        {% if content.translators.all %}
+            var $select = $('#translators');
+            var selectize = $select[0].selectize;
+        {% for item in content.translators.all %}selectize.addItem({{item.id}});{% endfor %}
+        {% endif %}
+        {% if content.tags.all %}
+            var $select = $('#tags');
+            var selectize = $select[0].selectize;
+        {% for item in content.tags.all %}selectize.addItem({{item.id}});{% endfor %}
+        {% endif %}
+        {% if content.geotags.all %}
+            var $select = $('#geotags');
+            var selectize = $select[0].selectize;
+        {% for item in content.geotags.all %}selectize.addItem({{item.id}});{% endfor %}
+        {% endif %}
+        {% if content.category.all %}
+            var $select = $('#categories');
+            var selectize = $select[0].selectize;
+        {% for item in content.category.all %}selectize.addItem({{item.id}});{% endfor %}
+        {% endif %}
+
+        var $authorForm = $('.ajax-form')
+        $authorForm.submit(function (event) {
+            event.preventDefault()
+            event.stopPropagation()
+            var $formData = $(this).serialize()
+            var $thisURL = $(this).attr('data-url')
+            var target = $(this).attr('data-target')
+            $.ajax({
+                method: "POST",
+                url: $thisURL,
+                data: $formData,
+                success: function (data){
+                    var $select = $('#'+target);
+                    var selectize = $select[0].selectize;
+                    selectize.addOption({value: data.id, text: data.title});
+                    selectize.addItem(data.id);
+                    $('.modal').modal('hide');
+                    $authorForm.trigger('reset');
+                },
+                error: function (error){
+                    console.log(error)
+                }
+            });
+        });
+        var data;
+        var casemap = new L.Map('formMap', { center: new L.LatLng(33.65, 53.36), zoom: 5 });
+        var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+              osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
+              drawnItems = L.featureGroup().addTo(casemap);
+        L.control.layers({
+          'osm': osm.addTo(casemap),
+          "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+              attribution: 'google'
+          })
+        }).addTo(casemap);
+        casemap.addControl(new L.Control.Draw({
+          edit: {
+              featureGroup: drawnItems,
+              poly: {
+                  allowIntersection: false
+              },
+          },
+          draw: {
+              polygon: {
+                  allowIntersection: false,
+                  showArea: true
+              },
+              rectangle: false,
+              circlemarker: false
+          }
+        }));
+        setInterval(function () {
+         casemap.invalidateSize();
+        }, 100);
+        casemap.on(L.Draw.Event.CREATED, function (event) {
+          var layer = event.layer;
+          drawnItems.addLayer(layer);
+          data = drawnItems.toGeoJSON();
+
+          $('input[name=json]').val(JSON.stringify(data));
+        });
+        casemap.on('draw:edited', (e)=>{
+        data = drawnItems.toGeoJSON();
+        $('input[name=json]').val(JSON.stringify(data));
+        });
+
+        drawnItems.on('layerremove', (e)=>{
+        data = drawnItems.toGeoJSON();
+        if (data.features.length > 0) {
+          $('input[name=json]').val(JSON.stringify(data));
+        }
+        });
+$('#addGeoTagModal').on('show.bs.modal', function(){
+    setTimeout(function() {
+        casemap.invalidateSize();
+    }, 10);
+ });
+
+    });
+
+</script>
+
+{% endblock %}

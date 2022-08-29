@@ -1,0 +1,8 @@
+[
+{% for author in authors %}
+  {
+    "value": "{{author.id}}",
+    "label": "{{author.first_name}} {{author.last_name}}"
+  },
+{% endfor %}
+]

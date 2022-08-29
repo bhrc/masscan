@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col">
+        {% for article in contents %}
+        <li class="list-group-item shadow">
+            <div class="fw-bold"><a class="text-reset" href="/{{ article.type.slug }}/{{ article.id }}">{{ article.title|truncatechars:80}}</a></div>
+            <p>
+                {% if article.authors.all %}
+                <i class="bi bi-person-lines-fill"></i>
+                {% for author in article.authors.all %}
+                <a class="text-reset" href="/authors/{{ author.id }}">{{ author.first_name }} {{ author.last_name }}</a>
+                {% endfor %}
+                {% endif %}
+            </p>
+            <p class="text-muted">
+                {% if article.publication %}
+                <i class="bi bi-card-heading"></i> <a class="text-reset" href="/publications/{{ article.publication.id }}">{{ article.publication.title }}</a> |
+                {% endif %}
+                 <i class="bi bi-calendar3"></i> {% if article.pub_date_d %}{{ article.pub_date_d }} {% endif %}{% if article.get_pub_date_m_display %}{{ article.get_pub_date_m_display }} {% endif %}{% if article.pub_date_y %}{{ article.pub_date_y }}{% endif %}
+                {% if article.pdf_file.url %}
+                 | <a class="text-reset" href="{{ article.pdf_file.url }}" target="_blank"><i class="bi bi-filetype-pdf"></i> دانلود</a>
+                {% endif %}
+            </p>
+        </li>
+        {% endfor %}
+        <a href="/contents/{{ contents.0.type.slug }}" class="text-reset">
+        <li class="list-group-item shadow bg-secondary text-light text-center fw-bold">
+            مشاهده همه {{ contents.0.type.title}}‌ها
+        </li>
+        </a>
+    </div>
+</div>

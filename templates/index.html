@@ -1,0 +1,122 @@
+{% extends 'default.html' %}
+{% block content %}
+  <section class="py-3 beta d-flex">
+    <div class="container mx-auto my-auto">
+        <div  class="row mb-4 p-4 rounded-10 shadow bg-light">
+            <div class="col-sm-9 d-flex">
+                <div class=" fw-bold align-self-center">
+                    <span class="display-5 fw-bold">دیده‌بان مسکن</span>
+                    <br>
+                    <span class="h4 fw-bold">
+                    مرجع تحقیق، سیاست‌گذاری، و کنشگری در حوزه مسکن
+                    </span>
+                    <input class="form-control form-control-warning form-control-lg mt-3 me-auto rounded-pill" type="search" placeholder="جستجو" aria-label="Search">
+                    <a class="btn btn-light btn-lg rounded-pill mt-3">اطلاعات بیشتر</a>
+                </div>
+            </div>
+              <div class="col-sm-3 shadow rounded bg-light  py-2">
+                    <h4 class="mt-2">آمار مسکن</h4>
+                    <div class="input-group mb-3">
+                      <select class="form-select p-2" id="inputGroupSelect01">
+                        <option selected>ایران</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                      <select class="form-select p-2" id="inputGroupSelect02">
+                        <option selected>۱۳۹۵</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                      </select>
+                    </div>
+
+                    <ol class="list-group mb-1">
+                      <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                          <span class="fw-bold">جمعیت</span><span class="badge text-dark">۲۶ تیر ۱۴۰۱</span>
+                        </div>
+                        <span class="badge bg-transparent text-dark">84,528,220</span>
+                      </li>
+                      <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                          <span class="fw-bold">بعد خانوار</span><span class="badge text-dark">۱۳۹۵</span>
+                        </div>
+                        <span class="badge badge text-dark">3.3</span>
+                      </li>
+                      <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                          <span class="fw-bold">تعداد خانوار</span><span class="badge text-dark">۱۳۹۵</span>
+                        </div>
+                        <span class="badge badge text-dark">24,196,035 </span>
+                      </li>
+                      <li class="list-group-item px-0 d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                          <span class="fw-bold">تعداد واحد مسکونی</span><span class="badge text-dark">۱۳۹۵</span>
+                        </div>
+                        <span class="badge badge text-dark">22,830,003</span>
+                      </li>
+                    </ol>
+                    <div class="d-grid">
+                      <button class="btn btn-dark" type="button">مشاهده آمار تفصیلی</button>
+                    </div>
+
+              </div>
+        </div>
+    {% include 'nav-links.html' %}
+    </div>
+  </section>
+  <section class="mb-3">
+    <div class="container p-4 rounded-10 shadow bg-light">
+      <div class="row mb-2">
+          <div class="col-sm-8">
+              <span class="h4 me-auto"><i class="bi bi-file-earmark-text-fill float-start me-2"></i> یادداشت‌ها</span>
+          </div>
+          <div class="col-sm-4">
+              <a class="btn btn-secondary rounded-pill float-end">مشاهده همه یادداشت‌ها</a>
+          </div>
+      </div>
+{% with contents=pieces %}
+{% include 'sectionHome1.html' %}
+{% endwith %}
+    </div>
+  </section>
+  <section class="mb-3">
+    <div class="container p-4 rounded-10 shadow bg-light">
+      <div class="row mb-2">
+          <div class="col">
+              <span class="h4 me-auto"><i class="bi bi-book float-start me-2"></i> کتاب‌ها</span>
+              <a class="btn btn-secondary rounded-pill float-end" href="/contents/{{ books.first.type.slug }}">مشاهده همه
+                  {{ books.first.type.title }}‌ها</a>
+          </div>
+      </div>
+{% with contents=books %}
+{% include 'sectionHome1.html' %}
+{% endwith %}
+
+    </div>
+  </section>
+  <section class="mb-3">
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-sm-6 mb-3 p-4 rounded-10 shadow bg-light">
+              <div class="row mb-2">
+                  <span class="h5 me-auto"><i class="bi bi-file-ruled-fill float-start me-2"></i> مقالات علمی</span>
+              </div>
+              {% with contents=articles %}
+              {% include 'sectionHome2.html' %}
+              {% endwith %}
+        </div>
+        <div class="col-sm-6 mb-3 p-4 rounded-10 shadow bg-light">
+            <div class="row mb-2">
+              <span class="h5"><i class="bi bi-journal"></i> پایان‌نامه‌ها</span>
+            </div>
+            {% with contents=thesis %}
+            {% include 'sectionHome2.html' %}
+            {% endwith %}
+        </div>
+    </div>
+
+    </div>
+  </section>
+{% endblock %}

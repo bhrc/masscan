@@ -1,0 +1,62 @@
+{% extends 'default.html' %}
+
+{% block content %}
+    <h4>
+        My author
+    </h4>
+    <select id="author_sel" name="author_sel" size="5" class="selectbox">
+        {% for author in authors %}
+            <option value="{{author.id}}">{{author.name|capfirst}}</option>
+        {% endfor %}
+    </select>
+    <form id="author-form">
+        {% csrf_token %}
+        <p>{{ form.as_p }}</p>
+        <input type="button" name="button" class="submit_button" id="add_author_button" value="Save">
+    </form>
+    <br>
+    <script type="text/javascript">
+    // assume the add author button has an id of add_author_button
+    $('#add_author_button').click(function(event){
+        event.preventDefault();
+        // assume the text field has an id of author_name
+        author_name= $('#id_name').val();
+        create_post(event, author_name);
+    }) //<-------- this closing bracket was missing?
+
+    function create_post(event, author_name) {
+        $.ajax({
+            url: ".", // the endpoint I'll precise that in comment
+            type: "POST", // http method
+            data: {
+                name: author_name,
+                csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
+            },
+
+            // handle a successful response - data will be a json object returned from your view method
+            success: function (data) {
+                if (data.error === undefined) {
+                    // assume your author multiple choice select has an id of author_sel
+                    // this will append the new author name to the list and will also
+                    // set the value for this author to be the newly created id so you can
+                    // perform other functions on the author like update and/or delete
+                    $('#author_sel').append($('<option/>', {
+                        value: data.author_id,
+                        text: data.author_name,
+                    }));
+                } else {
+                    // display the error on the page
+                    // and/or write it to the console log
+                    console.log(data.error);
+                }
+            },
+            // handle a non-successful http response
+            error: function (xhr, errmsg, err) {
+                // display the error on the page
+                // and/or write it to the console log
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    }
+</script>
+{% endblock %}
